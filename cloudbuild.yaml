@@ -1,0 +1,37 @@
+steps:
+# This step runs the unit tests on the app
+- name: 'python:3.7-slim'
+  id: Test
+  entrypoint: /bin/sh
+  args:
+  - -c
+  - 'pip install flask && python test_app.py -v'
+
+  # This step builds the container image.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '-t'
+  - 'gcr.io/digital-maker-333106/hello-world'
+  - '.'
+ 
+
+# This step pushes the image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'gcr.io/digital-maker-333106/hello-world'
+  
+  # This step deploys the new version of our container image
+# in Kubernetes Engine cluster.
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Deploy
+  args:
+  - 'apply'
+  - '-f'
+  - 'kubernetes.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_REGION=us-west1-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=tf-gke-k8s'
