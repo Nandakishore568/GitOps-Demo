@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: gcr.io/digital-maker-333106/hello-world:latest
+        image: gcr.io/digital-maker-333106/hello-world
         ports:
         - containerPort: 8080
 ---
